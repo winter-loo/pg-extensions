@@ -16,3 +16,19 @@ functions, procedures, types, operators are in this file.
 - add the new filename to Makefile `DATA`
 - change `default_version` inside utils.control
 - write code in the new file
+
+Then, shell commands:
+
+```shell
+make install
+```
+
+Then, pgsql commands:
+
+```sql
+-- import `utils` extension for the first time
+create extension utils;
+
+-- upgrade only
+alter extension utils update;
+```
