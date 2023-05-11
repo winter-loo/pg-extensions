@@ -1,0 +1,14 @@
+CREATE OR REPLACE FUNCTION hello() RETURNS VOID AS
+$$
+BEGIN
+  RAISE NOTICE 'hello world from PL/pgSQL';
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION hello_to(name TEXT) RETURNS VOID AS
+$$
+BEGIN
+  RAISE NOTICE 'hello %', name;
+END;
+$$
+LANGUAGE plpgsql;

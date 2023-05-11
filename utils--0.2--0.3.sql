@@ -1,0 +1,7 @@
+CREATE OR REPLACE FUNCTION hello(name TEXT) RETURNS VOID AS
+$$
+BEGIN
+  RAISE NOTICE 'Hello %', name;
+END;
+$$
+LANGUAGE plpgsql;

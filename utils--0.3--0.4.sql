@@ -1,0 +1,18 @@
+CREATE OR REPLACE FUNCTION hello(name TEXT) RETURNS VOID AS
+$$
+BEGIN
+  RAISE NOTICE 'Welcome %', name;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION uuid() RETURNS TEXT AS
+$$
+DECLARE
+retval TEXT;
+BEGIN
+  SELECT gen_random_uuid() INTO retval;
+  RETURN retval;
+END;
+$$
+LANGUAGE plpgsql;
