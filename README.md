@@ -1,4 +1,4 @@
-# utils for PL/pgSQL
+# snippets for pgsql extension
 
 # files
 
