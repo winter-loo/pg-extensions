@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'sum values in an array'
+default_version = '1.0'
+module_pathname = '$libdir/array_sum'
+relocatable = true
