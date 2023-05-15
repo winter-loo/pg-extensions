@@ -52,6 +52,7 @@ Datum c_reverse_tuple(PG_FUNCTION_ARGS)
 
     SHOW_LINE_HERE;
 
+    // encoding int32 as datum
     retvals[0] = Int32GetDatum(c);
     retvals[1] = Int32GetDatum(b);
     retvals[2] = Int32GetDatum(a);
