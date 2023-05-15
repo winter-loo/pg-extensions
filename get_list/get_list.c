@@ -11,9 +11,10 @@ PG_MODULE_MAGIC;
 PG_FUNCTION_INFO_V1(c_reverse_tuple);
 PG_FUNCTION_INFO_V1(c_permutations_x);
 
-#define FROM_HERE \
-    ereport(INFO, (errmsg("%d", __LINE__)))
+#define SHOW_LINE_HERE \
+    ereport(INFO, (errmsg("line %d", __LINE__)))
 
+// https://www.postgresql.org/docs/13/xfunc-c.html#id-1.8.3.13.11
 Datum c_reverse_tuple(PG_FUNCTION_ARGS)
 {
     HeapTupleHeader th;
@@ -25,6 +26,7 @@ Datum c_reverse_tuple(PG_FUNCTION_ARGS)
     Datum retvals[4];
     bool retnulls[4];
     HeapTuple rettuple;
+    TypeFuncClass ret;
 
     // get the tuple header of 1st argument
     th = PG_GETARG_HEAPTUPLEHEADER(0);
@@ -37,19 +39,18 @@ Datum c_reverse_tuple(PG_FUNCTION_ARGS)
     ereport(INFO,
             (errmsg("arg: (a: %d, b: %d, c: %d)", a, b, c)));
 
-    FROM_HERE;
+    SHOW_LINE_HERE;
     // set up tuple descriptor for result info
-    get_call_result_type(fcinfo, &resultTypeId, &resultTupleDesc);
+    ret = get_call_result_type(fcinfo, &resultTypeId, &resultTupleDesc);
+    if (ret != TYPEFUNC_COMPOSITE) {
+        ereport(ERROR, (errmsg("function returning record called in context that cannot accept type record")));
+    }
 
-    FROM_HERE;
-    // check that SQL function definition is set up to return arecord
-    Assert(resultTypeId == TYPEFUNC_COMPOSITE);
-
-    FROM_HERE;
+    SHOW_LINE_HERE;
     // make the tuple descriptor known to postgres as valid return type
     BlessTupleDesc(resultTupleDesc);
 
-    FROM_HERE;
+    SHOW_LINE_HERE;
 
     retvals[0] = Int32GetDatum(c);
     retvals[1] = Int32GetDatum(b);
@@ -61,10 +62,10 @@ Datum c_reverse_tuple(PG_FUNCTION_ARGS)
     retnulls[2] = cisnull;
     retnulls[3] = aisnull || bisnull || cisnull;
 
-    FROM_HERE;
+    SHOW_LINE_HERE;
     rettuple = heap_form_tuple(resultTupleDesc, retvals, retnulls);
 
-    FROM_HERE;
+    SHOW_LINE_HERE;
     PG_RETURN_DATUM(HeapTupleGetDatum(rettuple));
 }
 
@@ -75,6 +76,7 @@ struct c_reverse_tuple_args
     bool anyargnull;
 };
 
+// https://www.postgresql.org/docs/13/xfunc-c.html#XFUNC-C-RETURN-SET
 Datum c_permutations_x(PG_FUNCTION_ARGS)
 {
     FuncCallContext *funcctx;
