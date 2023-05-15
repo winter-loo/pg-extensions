@@ -16,6 +16,12 @@ CREATE OR REPLACE FUNCTION shared_reset()
     LANGUAGE C
     STRICT;
 
+CREATE OR REPLACE FUNCTION shared_get()
+    RETURNS int
+    AS 'add_con', 'shared_get'
+    LANGUAGE C
+    STRICT;
+
 -- usage:
 -- select add_con(), add_priv();
 -- select shared_reset();

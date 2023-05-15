@@ -7,6 +7,7 @@ PG_MODULE_MAGIC;
 
 PG_FUNCTION_INFO_V1(shared_add);
 PG_FUNCTION_INFO_V1(shared_reset);
+PG_FUNCTION_INFO_V1(shared_get);
 PG_FUNCTION_INFO_V1(priv_add);
 void _PG_init(void);
 
@@ -64,6 +65,16 @@ Datum shared_reset(PG_FUNCTION_ARGS) {
     LWLockRelease(&(sharedData->lwlock));
 
     PG_RETURN_NULL();
+}
+
+Datum shared_get(PG_FUNCTION_ARGS) {
+    int ans;
+    LWLockAcquire(&(sharedData->lwlock), LW_EXCLUSIVE);
+    // Access and modify sharedData->sharedData safely
+    ans = sharedData->sharedData;
+    LWLockRelease(&(sharedData->lwlock));
+
+    PG_RETURN_INT32(ans);
 }
 
 Datum priv_add(PG_FUNCTION_ARGS) {
