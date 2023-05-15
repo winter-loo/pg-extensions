@@ -32,3 +32,11 @@ create extension utils;
 -- upgrade only
 alter extension utils update;
 ```
+
+# simple way
+
+```shell
+./make_c_extension.sh foo
+cd foo
+./install.sh
+```
