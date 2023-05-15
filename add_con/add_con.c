@@ -22,6 +22,7 @@ static MySharedData *sharedData;
 // privData is only for each database connnection
 static int privData = 0;
 
+// called immediatly when loads the dynamic library
 void _PG_init(void)
 {
     bool found;
