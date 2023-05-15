@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'polymorphic add'
+default_version = '1.0'
+module_pathname = '$libdir/poly_add'
+relocatable = true

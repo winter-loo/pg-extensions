@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'is palindrome of a string'
+default_version = '1.0'
+module_pathname = '$libdir/is_palindrome'
+relocatable = true
