@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'a trigger for counting'
+default_version = '1.0'
+module_pathname = '$libdir/count_trigger'
+relocatable = true
