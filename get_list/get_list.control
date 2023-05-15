@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'get list of values'
+default_version = '1.0'
+module_pathname = '$libdir/get_list'
+relocatable = true
