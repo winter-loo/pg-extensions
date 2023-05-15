@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'add numbers concurrently'
+default_version = '1.0'
+module_pathname = '$libdir/add_con'
+relocatable = true

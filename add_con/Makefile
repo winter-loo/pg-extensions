@@ -1,8 +1,8 @@
-EXTENSION = hello_world
-MODULE_big = hello_world
-OBJS = hello_world.o
+EXTENSION = add_con
+MODULE_big = add_con
+OBJS = add_con.o
 
-DATA = hello_world--1.0.sql
+DATA = add_con--1.0.sql
 
 PG_CFLAGS = -g -O0 -Wall -Werror
 
