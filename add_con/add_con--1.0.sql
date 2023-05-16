@@ -12,7 +12,8 @@ CREATE OR REPLACE FUNCTION priv_add(int DEFAULT 1)
 
 CREATE OR REPLACE FUNCTION shared_reset()
     RETURNS VOID
-    AS 'add_con', 'shared_reset'
+    -- the symbol name can be ommited if this sql function name included in the object file
+    AS 'add_con'
     LANGUAGE C
     STRICT;
 
