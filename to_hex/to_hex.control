@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'print value in hexdecimal form'
+default_version = '1.0'
+module_pathname = '$libdir/to_hex'
+relocatable = true
