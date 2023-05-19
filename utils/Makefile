@@ -5,7 +5,8 @@
 EXTENSION = utils
 DATA = utils--0.2.sql \
 utils--0.2--0.3.sql \
-utils--0.3--0.4.sql
+utils--0.3--0.4.sql \
+utils--0.4--0.5.sql
 
 PG_CONFIG = pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
