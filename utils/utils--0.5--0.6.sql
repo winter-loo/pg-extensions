@@ -21,3 +21,8 @@ CREATE OR REPLACE FUNCTION show_locks() RETURNS SETOF record AS
 $$
     select * from view_locks;
 $$ LANGUAGE SQL;
+
+SELECT pg_stat_activity.pid, pg_stat_activity.query
+FROM pg_locks
+JOIN pg_stat_activity ON pg_stat_activity.pid = pg_locks.pid
+WHERE pg_locks.virtualtransaction = '4/255';

@@ -1,5 +1,3 @@
 # extension_name extension
-comment = 'query information about pg_type'
 default_version = '1.0'
-module_pathname = '$libdir/query_pg_type'
 relocatable = true

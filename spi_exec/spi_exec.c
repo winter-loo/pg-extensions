@@ -19,6 +19,7 @@ Datum count_returned_rows(PG_FUNCTION_ARGS)
     cnt = PG_GETARG_INT32(1);
 
     SPI_connect();
+
     ret = SPI_exec(command, cnt);
     proc = SPI_processed;
 
@@ -46,7 +47,6 @@ Datum count_returned_rows(PG_FUNCTION_ARGS)
         }
     }
 
-    SPI_finish();
     SPI_finish();
     pfree(command);
 
