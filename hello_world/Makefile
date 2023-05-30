@@ -4,9 +4,10 @@ OBJS = hello_world.o
 
 DATA = hello_world--1.0.sql
 
-PG_CFLAGS = -g -O0 -Wall -Werror
+ifdef DEBUG
+	PG_CFLAGS = -g -O0 -Wall -Werror
+endif
 
 PG_CONFIG = pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
-
