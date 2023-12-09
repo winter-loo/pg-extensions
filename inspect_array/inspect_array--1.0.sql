@@ -1,0 +1,5 @@
+CREATE OR REPLACE FUNCTION inspect_array(name[])
+    RETURNS text
+    AS 'MODULE_PATHNAME'
+    LANGUAGE C
+    STRICT;

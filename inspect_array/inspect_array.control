@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'inspect_array'
+default_version = '1.0'
+module_pathname = '$libdir/inspect_array'
+relocatable = true
