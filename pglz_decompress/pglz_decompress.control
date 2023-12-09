@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'pglz_decompress'
+default_version = '1.0'
+module_pathname = '$libdir/pglz_decompress'
+relocatable = true
