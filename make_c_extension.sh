@@ -24,5 +24,6 @@ cp hello_world/hello_world--1.0.sql $ext_name/$ext_name--1.0.sql
 cp hello_world/hello_world.c $ext_name/$ext_name.c
 cp hello_world/hello_world.control $ext_name/$ext_name.control
 
-find $ext_name -type f -exec sed -i "s/hello_world/$ext_name/g" \{\} \;
-sed -i "s/comment = 'hello world'/comment = \'$ext_desc\'/g" $ext_name/$ext_name.control
+find $ext_name -type f -exec sed -i'.bak' "s/hello_world/$ext_name/g" \{\} \;
+sed -i'.bak' "s/comment = 'hello world'/comment = \'$ext_desc\'/g" $ext_name/$ext_name.control
+find $ext_name -type f -name "*.bak" -exec rm {} \;
