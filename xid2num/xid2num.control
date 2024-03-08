@@ -1,5 +1,0 @@
-# extension_name extension
-comment = 'xid2num'
-default_version = '1.0'
-module_pathname = '$libdir/xid2num'
-relocatable = true
