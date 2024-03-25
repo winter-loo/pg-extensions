@@ -2,3 +2,4 @@
 *.so
 .vscode/
 .deps/
+compile_commands.json
