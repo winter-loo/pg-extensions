@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'copy_data'
+default_version = '1.0'
+module_pathname = '$libdir/copy_data'
+relocatable = true
