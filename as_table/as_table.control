@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'as_table'
+default_version = '1.0'
+module_pathname = '$libdir/as_table'
+relocatable = true
