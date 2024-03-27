@@ -73,7 +73,7 @@ Datum copy_data(PG_FUNCTION_ARGS)
     BulkInsertState bistate;
     int ti_options = 0;
     CommandId mycid = GetCurrentCommandId(true);
-
+    TupleConversionMap* tuple_map;
 
     if (create_table)
     {
@@ -90,24 +90,52 @@ Datum copy_data(PG_FUNCTION_ARGS)
 
     srcslot = MakeSingleTupleTableSlot(RelationGetDescr(r1), table_slot_callbacks(r1));
 
+    /* need this to check tuple attributes(i.e. table columns) compatibility
+     * 
+     * ```sql
+     * create table a(a int, c date);
+     * create table b(b int, c date);
+     * create table c(c date);
+     *
+     * select merge_data('{"a", "b"}', 'c');
+     * ```
+     *
+     * Only the attribute `c` of `a` and the attribute `c` of `b` are copied to `c`
+     *
+     * If any arribute of `c` not in `a` or `b`, error will be raised.
+     *
+     */
+    tuple_map = convert_tuples_by_name(RelationGetDescr(r1), RelationGetDescr(r2));
+
     snapshot = RegisterSnapshot(GetTransactionSnapshot());
     scan = table_beginscan(r1, snapshot, 0, NULL);
     elog(NOTICE, "start copy data");
     while (table_scan_getnextslot(scan, ForwardScanDirection, srcslot))
     {
+        TupleTableSlot* insertslot;
+
         /* read one row from original table */
         slot_getallattrs(srcslot);
 
-        ExecClearTuple(dstslot);
-        memcpy(dstslot->tts_values, srcslot->tts_values, sizeof(Datum) * srcslot->tts_nvalid);
-        memcpy(dstslot->tts_isnull, srcslot->tts_isnull, sizeof(bool) * srcslot->tts_nvalid);
-        ExecStoreVirtualTuple(dstslot);
+        if (tuple_map)
+        {
+            insertslot = execute_attr_map_slot(tuple_map->attrMap, srcslot, dstslot);
+        }
+        else
+        {
+            insertslot = srcslot;
+
+            ExecClearTuple(insertslot);
+            memcpy(insertslot->tts_values, srcslot->tts_values, sizeof(Datum) * srcslot->tts_nvalid);
+            memcpy(insertslot->tts_isnull, srcslot->tts_isnull, sizeof(bool) * srcslot->tts_nvalid);
+            ExecStoreVirtualTuple(insertslot);
+        }
         
-        table_tuple_insert(r2, dstslot, mycid, ti_options, bistate);
+        table_tuple_insert(r2, insertslot, mycid, ti_options, bistate);
         /* pg_usleep(1000000); */
 
         /* fast cancel copying by Ctrl+C */
-        CHECK_FOR_INTERRUPTS();
+        CHECK_FOR_INTERRUPTS(); 
     }
     table_endscan(scan);
     UnregisterSnapshot(snapshot);

@@ -4,13 +4,11 @@
 
 PG_MODULE_MAGIC;
 
-PG_FUNCTION_INFO_V1(hello_world);
-void _PG_init(void);
-
 void _PG_init(void) {
   ereport(INFO, (errmsg("...loading extension hello_world...")));
 }
 
+PG_FUNCTION_INFO_V1(hello_world);
 Datum hello_world(PG_FUNCTION_ARGS)
 {
     char *str = "Hello, world!";
