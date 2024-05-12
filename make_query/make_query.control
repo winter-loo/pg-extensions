@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'make_query'
+default_version = '1.0'
+module_pathname = '$libdir/make_query'
+relocatable = true
