@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'locks'
+default_version = '1.0'
+module_pathname = '$libdir/locks'
+relocatable = true
