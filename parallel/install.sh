@@ -12,4 +12,4 @@ else
 fi
 make install
 
-psql -c "drop extension if exists hello_world;create extension hello_world;"
+psql -c "drop extension if exists parallel;create extension parallel;"
