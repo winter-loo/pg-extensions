@@ -1,0 +1,115 @@
+From c5dd756df9b0961d2bcf46c6ef42db869cacb668 Mon Sep 17 00:00:00 2001
+From: "winter.loo" <adjkldd@126.com>
+Date: Sun, 17 Nov 2024 23:22:06 +0800
+Subject: [PATCH] remove condition for parallel insert
+
+---
+ src/backend/access/heap/heapam.c    |  4 ++--
+ src/backend/access/transam/varsup.c |  4 ++--
+ src/backend/access/transam/xact.c   | 14 +++++++++-----
+ src/backend/executor/execMain.c     |  4 ++--
+ 4 files changed, 15 insertions(+), 11 deletions(-)
+
+diff --git a/src/backend/access/heap/heapam.c b/src/backend/access/heap/heapam.c
+index 22babd9b84..619b9ecdeb 100644
+--- a/src/backend/access/heap/heapam.c
++++ b/src/backend/access/heap/heapam.c
+@@ -2062,10 +2062,10 @@ heap_prepare_insert(Relation relation, HeapTuple tup, TransactionId xid,
+ 	 * inserts in general except for the cases where inserts generate a new
+ 	 * CommandId (eg. inserts into a table having a foreign key column).
+ 	 */
+-	if (IsParallelWorker())
++	/* if (IsParallelWorker())
+ 		ereport(ERROR,
+ 				(errcode(ERRCODE_INVALID_TRANSACTION_STATE),
+-				 errmsg("cannot insert tuples in a parallel worker")));
++				 errmsg("cannot insert tuples in a parallel worker"))); */
+ 
+ 	tup->t_data->t_infomask &= ~(HEAP_XACT_MASK);
+ 	tup->t_data->t_infomask2 &= ~(HEAP2_XACT_MASK);
+diff --git a/src/backend/access/transam/varsup.c b/src/backend/access/transam/varsup.c
+index e14b53bf9e..741e39b1f1 100644
+--- a/src/backend/access/transam/varsup.c
++++ b/src/backend/access/transam/varsup.c
+@@ -55,8 +55,8 @@ GetNewTransactionId(bool isSubXact)
+ 	 * Workers synchronize transaction state at the beginning of each parallel
+ 	 * operation, so we can't account for new XIDs after that point.
+ 	 */
+-	if (IsInParallelMode())
+-		elog(ERROR, "cannot assign TransactionIds during a parallel operation");
++	/* if (IsInParallelMode())
++		elog(ERROR, "cannot assign TransactionIds during a parallel operation"); */
+ 
+ 	/*
+ 	 * During bootstrap initialization, we return the special bootstrap
+diff --git a/src/backend/access/transam/xact.c b/src/backend/access/transam/xact.c
+index ac5ce071d1..16f0aeeb9b 100644
+--- a/src/backend/access/transam/xact.c
++++ b/src/backend/access/transam/xact.c
+@@ -566,8 +566,8 @@ AssignTransactionId(TransactionState s)
+ 	 * Workers synchronize transaction state at the beginning of each parallel
+ 	 * operation, so we can't account for new XIDs at this point.
+ 	 */
+-	if (IsInParallelMode() || IsParallelWorker())
+-		elog(ERROR, "cannot assign XIDs during a parallel operation");
++	/* if (IsInParallelMode() || IsParallelWorker())
++		elog(ERROR, "cannot assign XIDs during a parallel operation"); */
+ 
+ 	/*
+ 	 * Ensure parent(s) have XIDs, so that a child always has an XID later
+@@ -755,7 +755,7 @@ GetCurrentCommandId(bool used)
+ 		 * could relax this restriction when currentCommandIdUsed was already
+ 		 * true at the start of the parallel operation.
+ 		 */
+-		Assert(!IsParallelWorker());
++		// Assert(!IsParallelWorker());
+ 		currentCommandIdUsed = true;
+ 	}
+ 	return currentCommandId;
+@@ -1019,8 +1019,8 @@ CommandCounterIncrement(void)
+ 		 * parallel operation, so we can't account for new commands after that
+ 		 * point.
+ 		 */
+-		if (IsInParallelMode() || IsParallelWorker())
+-			elog(ERROR, "cannot start commands during a parallel operation");
++		/* if (IsInParallelMode() || IsParallelWorker())
++			elog(ERROR, "cannot start commands during a parallel operation"); */
+ 
+ 		currentCommandId += 1;
+ 		if (currentCommandId == InvalidCommandId)
+@@ -2154,6 +2154,9 @@ CommitTransaction(void)
+ 	s->state = TRANS_COMMIT;
+ 	s->parallelModeLevel = 0;
+ 
++#if 1
++		latestXid = RecordTransactionCommit();
++#else
+ 	if (!is_parallel_worker)
+ 	{
+ 		/*
+@@ -2176,6 +2179,7 @@ CommitTransaction(void)
+ 		 */
+ 		ParallelWorkerReportLastRecEnd(XactLastRecEnd);
+ 	}
++#endif
+ 
+ 	TRACE_POSTGRESQL_TRANSACTION_COMMIT(MyProc->lxid);
+ 
+diff --git a/src/backend/executor/execMain.c b/src/backend/executor/execMain.c
+index 565262dd27..5e35ac0618 100644
+--- a/src/backend/executor/execMain.c
++++ b/src/backend/executor/execMain.c
+@@ -776,8 +776,8 @@ ExecCheckXactReadOnly(PlannedStmt *plannedstmt)
+ 		PreventCommandIfReadOnly(CreateCommandName((Node *) plannedstmt));
+ 	}
+ 
+-	if (plannedstmt->commandType != CMD_SELECT || plannedstmt->hasModifyingCTE)
+-		PreventCommandIfParallelMode(CreateCommandName((Node *) plannedstmt));
++	/* if (plannedstmt->commandType != CMD_SELECT || plannedstmt->hasModifyingCTE)
++		PreventCommandIfParallelMode(CreateCommandName((Node *) plannedstmt)); */
+ }
+ 
+ 
+-- 
+2.30.1
+
