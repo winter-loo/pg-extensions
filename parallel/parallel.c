@@ -174,7 +174,6 @@ Datum parallel(PG_FUNCTION_ARGS)
   }
 
   /* Calculate total shared memory needed */
-  /* we do not the zero-index slot in task_list */
   shared_size = TASK_LIST_HEADER_OFFSET + ntasks * sizeof(uint32) + query_string_total_size;
   elog(INFO, "shared memory in bytes will be used: %ld", shared_size);
 
@@ -188,7 +187,7 @@ Datum parallel(PG_FUNCTION_ARGS)
   shm_toc_estimate_chunk(&pcxt->estimator, offsetof(DebuggerAttachSingal, wait) + ntasks * sizeof(bool));
   shm_toc_estimate_keys(&pcxt->estimator, 1);
 
-  InitializeParallelDSM(pcxt);  /* create DSM and copy state to it */
+  InitializeParallelDSM(pcxt);
 
   shared = (SharedContext *)shm_toc_allocate(pcxt->toc, shared_size);
   pg_atomic_init_u64(&shared->count, 0);
