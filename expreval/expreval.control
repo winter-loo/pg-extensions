@@ -1,0 +1,5 @@
+# extension_name extension
+comment = 'expreval'
+default_version = '1.0'
+module_pathname = '$libdir/expreval'
+relocatable = true
